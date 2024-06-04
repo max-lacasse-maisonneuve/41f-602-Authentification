@@ -1,9 +1,10 @@
-import React from "react";
+import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import "./Entete.css";
+import { AppContext } from "../App/App";
 
-function Entete({ handleLogin }) {
-    //TODO: Ajouter l'état de connexion
+function Entete({ handleLogin, handleLogout }) {
+    const contexte = useContext(AppContext); // Contient le value
     return (
         <header className="pt-medium pb-medium">
             <div className="wrapper">
@@ -12,16 +13,24 @@ function Entete({ handleLogin }) {
                         <h1>VideoClub</h1>
                     </NavLink>
                     <div className="entete__right">
-                        <nav>
-                            <NavLink to="/admin" className={"underline"}>
-                                Page privée
-                            </NavLink>
-                        </nav>
-                        <form onSubmit={handleLogin}>
-                            <input type="text" name="courriel" placeholder="Usager"></input>
-                            <input type="password" name="mdp" placeholder="Mot de passe"></input>
-                            <button>Connexion</button>
-                        </form>
+                        {contexte.isLogged === false ? (
+                            <nav>
+                                <NavLink to="/admin" className={"underline"}>
+                                    Page privée
+                                </NavLink>
+                            </nav>
+                        ) : (
+                            ""
+                        )}
+                        {contexte.isLogged === false ? (
+                            <form onSubmit={handleLogin}>
+                                <input type="text" name="courriel" placeholder="Usager"></input>
+                                <input type="password" name="mdp" placeholder="Mot de passe"></input>
+                                <button>Connexion</button>
+                            </form>
+                        ) : (
+                            <button onClick={handleLogout}>Déconnexion</button>
+                        )}
                     </div>
                 </div>
             </div>

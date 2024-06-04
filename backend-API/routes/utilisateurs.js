@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db.js");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
 
 // /**
@@ -60,16 +61,7 @@ router.get("/", async (req, res) => {
  */
 router.post(
     "/inscription",
-    [
-        check("courriel").escape().trim().notEmpty().isEmail().normalizeEmail(),
-        check("mdp").escape().trim().notEmpty().isLength({ min: 8, max: 20 }).isStrongPassword({
-            minLength: 8,
-            minLowercase: 1,
-            minUppercase: 1,
-            minNumbers: 1,
-            minSymbols: 1,
-        }),
-    ],
+    [check("courriel").escape().trim().notEmpty().isEmail().normalizeEmail(), check("mdp").escape().trim().notEmpty()],
     async (req, res) => {
         try {
             const validation = validationResult(req);
@@ -134,10 +126,19 @@ router.post(
                 res.json({ message: "Le courriel n'existe pas" });
             } else {
                 const resultatConnexion = await bcrypt.compare(motDePasse, utilisateur.mdp);
-                delete utilisateur.mdp;
 
                 if (resultatConnexion) {
-                    res.json(utilisateur);
+                    const donneesJeton = {
+                        id: utilisateur.id,
+                        courriel: utilisateur.courriel,
+                    };
+
+                    const options = {
+                        expiresIn: "1d",
+                    };
+
+                    const jeton = jwt.sign(donneesJeton, process.env.JWT_SECRET, options);
+                    res.json(jeton);
                 } else {
                     res.statusCode = 400;
                     res.json({ message: "Mot de passe incorrect" });
