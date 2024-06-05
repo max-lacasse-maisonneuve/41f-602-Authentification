@@ -14,9 +14,10 @@ function Admin() {
             description: form.description.value,
             realisation: form.description.value,
             annee: form.description.value,
-            titreVignette: form.titreVignette.value,
+            titreVignette: form.titreVignette.files[0].name,
         };
 
+        // console.log(form.titreVignette.files[0]);
         const token = `Bearer ${localStorage.getItem("api-film-token")}`;
         const options = {
             method: "POST",
@@ -27,8 +28,25 @@ function Admin() {
             body: JSON.stringify(data),
         };
 
+        //On enregistre le film en premier
         const reponse = await fetch("http://localhost:3301/api/films", options);
         const json = await reponse.json();
+
+        //Gestion de l'image
+        // const image = form.titreVignette.files[0];
+        // const formData = new FormData();
+
+        // formData.append("image", image);
+        // let options2 = {
+        //     method: "POST",
+        //     headers: {
+        //         authorization: token,
+        //     },
+        //     body: formData,
+        // };
+        // const reponseImage = await fetch("http://localhost:3301/api/films/upload-image", options2);
+        // const traitementReponse = await reponseImage.json();
+
         if (reponse.status == 200) {
             navigate("/");
         } else {
@@ -72,7 +90,7 @@ function Admin() {
                     </div>
                     <div>
                         <label htmlFor="titreVignette">TitreVignette</label>
-                        <input type="text" name="titreVignette" />
+                        <input type="file" name="titreVignette" />
                     </div>
                     <div>
                         <label htmlFor="annee">Année</label>

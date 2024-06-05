@@ -4,6 +4,21 @@ const db = require("../config/db.js");
 const auth = require("../middlewares/auth.js");
 const { check, validationResult } = require("express-validator");
 
+// Package permettant d'enregister l'image
+// const multer = require("multer");
+
+// var storage = multer.diskStorage({
+//     destination: function (req, file, callback) {
+//         callback(null, "public/img");
+//     },
+//     filename: function (req, file, callback) {
+//         callback(null, file.originalname);
+//     },
+// });
+// let upload = multer({
+//     storage: storage,
+// });
+
 /**
  * Cette route permet de récupérer la liste des films
  * @route GET /films
@@ -106,6 +121,18 @@ router.post(
     }
 );
 
+//Route permettant l'ajout d'image
+//Ne pas oublié d'importer le package dans le haut du fichier
+// router.post("/upload-image", auth, upload.single("image"), (req, res) => {
+//     try {
+//         console.log(req.body, req.file);
+//         res.statusCode == 200;
+//         return res.json({ message: "L'image a été enregistrée" });
+//     } catch (erreur) {
+//         res.statusCode = 500;
+//         return res.json({ message: "Une erreur est survenue lors de l'enregistrement de l'image" });
+//     }
+// });
 /**
  * Cette route permet de modifier un film
  * @route PUT /films/{id}
